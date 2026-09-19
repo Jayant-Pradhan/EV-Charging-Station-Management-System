@@ -2,14 +2,12 @@ package com.ev.stationservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
-@EnableCaching
-public class Station_Application {
+public class Booking_Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Station_Application.class, args);
+        SpringApplication.run(Booking_Application.class, args);
     }
 
 }
