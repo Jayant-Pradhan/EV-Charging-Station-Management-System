@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StationCreatedEvent {
-    private String stationId;
-    private String stationName;
-    private Double latitude;
-    private Double longitude;
+public class ChargerCreatedEvent {
+    private String chargerId;
+    private String chargerNumber;
+    private String chargerType;
+    private Double power;
     private String status;
 }
