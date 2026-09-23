@@ -4,4 +4,5 @@ User management and authentication service for the EV Charging Station Managemen
 
 ## Status
 
-Complete
+User Service Completed
+
