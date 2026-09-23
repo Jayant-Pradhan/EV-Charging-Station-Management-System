@@ -4,10 +4,13 @@ import com.ev.stationservice.DTO.BookingRequest;
 import com.ev.stationservice.DTO.BookingResponse;
 import com.ev.stationservice.DTO.BookingUpdateRequest;
 import com.ev.stationservice.Entity.Booking;
+import com.ev.stationservice.Kafka.ConsumerDataStore;
 import com.ev.stationservice.Kafka.Event.BookingCreatedEvent;
 import com.ev.stationservice.Kafka.Producer.BookingEventProducer;
 import com.ev.stationservice.Repository.BookingRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,6 +26,7 @@ import java.util.UUID;
 public class BookingService {
     private final BookingRepository bookingRepository;
     private final BookingEventProducer bookingEventProducer;
+    private final ConsumerDataStore consumerDataStore;
 
     public String createBooking(BookingRequest bookingRequest) {
         if(bookingRequest.getUserId() == null || bookingRequest.getStationId() == null || bookingRequest.getChargerId() == null){
@@ -36,6 +40,19 @@ public class BookingService {
             throw new RuntimeException("booking is not allowed for this particular charger id because , this charger is already booked by some other user ");
         }
         else{
+
+            // Validate consumed data first
+            if(!consumerDataStore.containsUserId(bookingRequest.getUserId())){
+                throw new RuntimeException("user ID is not available in consumed user Data");
+            }
+            if(!consumerDataStore.containsStationId(bookingRequest.getStationId())){
+                throw new RuntimeException("station ID is not available in consumer station data");
+            }
+            if(!consumerDataStore.containsChargerId(bookingRequest.getChargerId())){
+                throw new RuntimeException("charger ID is not available in consumed charger Data ");
+            }
+
+            // Create booking only after validation
             Booking booking = new Booking();
             booking.setBookingId(UUID.randomUUID().toString());
             booking.setChargerId(bookingRequest.getChargerId());
@@ -48,6 +65,7 @@ public class BookingService {
             booking.setCreatedAt(LocalDateTime.now());
             bookingRepository.save(booking);
 
+            // publish event...
             bookingEventProducer.publishingBookingDetailsToEvent(
                     new BookingCreatedEvent(
                             booking.getBookingId(),
@@ -64,6 +82,7 @@ public class BookingService {
         }
     }
 
+    @Cacheable("bookings")
     public BookingResponse getBookingListById(String bookingId) {
 
         Optional<Booking> isAvail = bookingRepository.findById(bookingId);
@@ -188,7 +207,7 @@ public class BookingService {
         }
     }
 
-
+    @CacheEvict(value = "bookings", key = "#bookingId")
     public String cancelBooking(String bookingId) {
 
         Optional<Booking> isAvail = bookingRepository.findById(bookingId);

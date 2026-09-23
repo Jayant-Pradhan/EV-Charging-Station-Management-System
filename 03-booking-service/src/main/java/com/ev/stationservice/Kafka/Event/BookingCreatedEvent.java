@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class BookingCreatedEvent {
     private String bookingId;
-    private Integer userId;
+    private long userId;
     private String stationId;
     private String chargerId;
     private LocalDate bookingDate;

@@ -1,5 +1,6 @@
 package com.ev.stationservice.Kafka.Producer;
 
+import com.ev.stationservice.Kafka.ConsumerDataStore;
 import com.ev.stationservice.Kafka.Event.BookingCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class BookingEventProducer {
+
+
     private final KafkaTemplate<String,Object> kafkaTemplate;
     private static final String BOOKING_DETAILS_TOPIC = "booking.details";
 

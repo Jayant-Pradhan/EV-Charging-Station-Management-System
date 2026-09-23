@@ -10,11 +10,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserCreatedEvent {
-    private long id;
+    private long userId;
     private String name;
     private String mail;
     private String phone;
     private String role;
     private String vehicleNumber;
     private LocalDateTime createdAt;
+
+
 }
