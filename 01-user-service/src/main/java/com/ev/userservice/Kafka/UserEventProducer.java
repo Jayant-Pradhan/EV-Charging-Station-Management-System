@@ -20,7 +20,7 @@ public class UserEventProducer {
     public void sendingWithRetry(EventData eventData,int attempt){
 
 
-        kafkaTemplate.send(USER_DETAILS_TOPIC,String.valueOf(eventData.getId()),eventData)
+        kafkaTemplate.send(USER_DETAILS_TOPIC,String.valueOf(eventData.getUserId()),eventData)
                 .whenComplete((result,exception)->{
                     if(exception == null){  /// exception nhi hai
                         log.info("data sent to Kafka topic successfully : ");
