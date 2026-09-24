@@ -5,6 +5,8 @@ import com.ev.paymentservice.DTO.PaymentResponse;
 import com.ev.paymentservice.Entity.Payment;
 import com.ev.paymentservice.Exception.PaymentNotFoundException;
 import com.ev.paymentservice.Kafka.Event.BookingCreatedEvent;
+import com.ev.paymentservice.Kafka.Event.PaymentCompletedEvent;
+import com.ev.paymentservice.Kafka.Producer.PaymentEventProducer;
 import com.ev.paymentservice.Repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final PaymentEventProducer paymentEventProducer;
     private String consumerBookingId;
     private Long consumerUserId;
 
@@ -49,10 +52,37 @@ public class PaymentService {
         }
         paymentRepository.save(payment);
 
+        paymentEventProducer.publishingEventFromPayment(
+                new PaymentCompletedEvent(
+                        payment.getPaymentId() , payment.getBookingId() , payment.getUserId() ,
+                        payment.getAmount() , payment.getPaymentStatus() , payment.getTransactionId(),
+                        payment.getCreatedAt()
+                )
+        );
+
+
+
         return "Payment created successfully : " + payment.getPaymentId();
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void updateBookingDetails(BookingCreatedEvent bookingCreatedEvent) {
 
