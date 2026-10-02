@@ -269,6 +269,41 @@ The project includes containerized components such as:
 
 Docker configuration allows the services and infrastructure to run in a consistent local environment.
 
+## Testing
+
+Unit testing is implemented using **JUnit 5** and **Mockito**.
+
+The project includes unit tests for:
+
+- Service layer business logic
+- Controller layer API behavior
+- Success and failure scenarios
+- Mocking dependencies using Mockito
+
+### Code Coverage
+
+**JaCoCo** is used to measure test coverage.
+
+The coverage configuration focuses on the:
+
+- Controller layer
+- Service layer
+
+Current coverage:
+
+| Service | Controller | Service |
+|---------|------------|---------|
+| User Service | 100% | 100% |
+| Station Service | 100% | 100% |
+| Booking Service | 100% | 100% |
+| Payment Service | 100% | 100% |
+| Notification Service | N/A | 100% |
+
+The JaCoCo report is generated at:
+
+```text
+target/site/jacoco/index.html
+
 ## Project Structure
 
     EV-Charging-Station-Management-System
